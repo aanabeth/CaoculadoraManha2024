@@ -97,16 +97,7 @@ struct ContentView: View {
             return
         }
         
-        let multiplicador: Int
-        switch selectedPorte {
-        case .pequeno:
-            multiplicador = 6
-        case .médio:
-            multiplicador = 7
-        case .grande:
-            multiplicador = 8
-        }
-        result = anos * multiplicador + meses * multiplicador/12
+        result = selectedPorte.calcularIdade(deAnos: anos, eMeses: meses)
     }
 }
 
