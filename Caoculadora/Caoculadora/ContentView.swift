@@ -14,6 +14,9 @@ struct ContentView: View {
     //    @State var selectedSegment = 0
     @State var selectedPorte = Porte.pequeno
     @State var result: Int?  = nil
+    @State var failedInput = false
+    
+    let tituloPreencherCampos = "Preencha os campos para cãocular!"
     
     var body: some View {
         NavigationStack {
@@ -61,8 +64,14 @@ struct ContentView: View {
                     if let result {
                         Text("Seu cão tem, em idade humana...")
                             .font(.b1)
+                            .foregroundStyle(.indigo60)
+                            .frame(maxWidth: .infinity)
+                            
                         Text("\(result) anos")
                             .font(.display)
+                            .foregroundStyle(.indigo60)
+                            .frame(maxWidth: .infinity)
+                            .contentTransition(.numericText())
                     } else {
                         Image(ImageResource.clarinha)
                             .resizable()
@@ -82,12 +91,16 @@ struct ContentView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     
                 }
+                .alert(tituloPreencherCampos, isPresented: $failedInput, actions: {
+                    Button("OK", role: .cancel, action: {})
+                })
                 //            .pickerStyle(.wheel)
                 .pickerStyle(.palette)
                 .textFieldStyle(.roundedBorder)
                 .keyboardType(.numberPad)
                 .padding()
                 .containerRelativeFrame(.vertical)
+                .animation(.easeInOut.speed(0.5), value: result)
             }
             .navigationTitle("Cãoculadora")
             .scrollDismissesKeyboard(.immediately)
@@ -106,6 +119,7 @@ extension ContentView {
         
         guard let anos, let meses else {
             print("campos não preenchidos")
+            failedInput = true
             return
         }
         
@@ -114,9 +128,10 @@ extension ContentView {
             return
         }
         
-        result = selectedPorte.calcularIdade(deAnos: anos, eMeses: meses)
+        withAnimation(.easeInOut.speed(0.5)) {
+            result = selectedPorte.calcularIdade(deAnos: anos, eMeses: meses)
+        }
     }
-    
 }
 
 #Preview {
